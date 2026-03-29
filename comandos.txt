@@ -1,0 +1,105 @@
+-------------------------------- INICIO
+docker --version
+docker compose version
+
+docker rm $(docker ps -a -q) -f
+docker rmi $(docker images -q) -f
+🎬 🧠 BLOQUE 1 — “Hola mundo con Docker”
+docker run hello-world
+para ver todos los contenedores -a muestra todos los activos sin el -a
+docker ps -a
+🧱nginx
+docker rm (-f) start stop 
+docker run -d -p 8080:80 nginx
+docker run -d -p 8080:80 nginx
+🧱juegos y mas 
+docker run -d -p 8080:80 evilroot/docker-2048
+🧱linux
+docker run -dit --name alpine_test alpine sh
+uname -a
+cat /etc/os-release
+apk add curl
+##eliminar el contenedor luego crear de nuevo:
+docker run -dit --name alpine_test alpine sh
+docker exec -it alpine_test sh
+--------------------------------------------------------PYTHON
+mkdir docker-python-demo
+cd docker-python-demo
+''''''
+from flask import Flask
+
+app = Flask(__name__)
+
+@app.route("/")
+def home():
+    return "Hola mundo desde Docker con Flask"
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=5000)
+''''''
+
+requirements.txt 
+flask
+##Dockerfile
+FROM python:3.12-slim
+
+WORKDIR /app
+
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY . .
+
+CMD ["python", "app.py"]
+
+##build la imagen 
+docker build -t flask_app .
+##correr dicha imagen
+docker run -d -p 5000:5000 --name flask_container flask_app
+
+--------------------------------BASE
+docker run -d --name postgres16_demo -e POSTGRES_PASSWORD=admin123 -e POSTGRES_DB=demo_db -p 5432:5432  postgres:18.1-trixie
+hacemos la prueba poniendo en otro puerto 
+##Explicamos el docker compose 
+diferencia del up y start 
+up 
+-crea contenedores (si no existen)
+-construye imágenes (si hay build)
+-inicia servicios
+-conecta redes
+-crea volúmenes
+start
+-inicia contenedores que ya existen
+-NO crea
+-NO construye
+-NO cambia nada
+🧠 💥 Diferencia clave
+
+👉 Servicio (compose) ≠ Contenedor (Docker runtime)
+
+🧩 🎯 Concepto simple
+🔹 Servicio (service)
+	Es lo que defines en compose.yaml
+	Es un nombre lógico
+	Vive en el archivo
+
+👉 Ejemplo:	docker compose exec postgres16 bash
+
+services:
+  postgres16:
+
+👉 postgres16 = servicio
+
+🔹 Contenedor (container)
+Es lo que realmente se ejecuta
+Tiene nombre o ID
+Vive en Docker
+
+👉 Ejemplo: docker exec -it postgres16_demo bash
+
+container_name: postgres16_demo
+
+👉 postgres16_demo = contenedor real
+
+Puede pasar que la imagen oficial funcione bien para la aplicación, pero que necesitemos aplicar actualizaciones del sistema base, políticas internas o ajustes de seguridad.
+En esos casos construimos una imagen propia sobre la oficial.
