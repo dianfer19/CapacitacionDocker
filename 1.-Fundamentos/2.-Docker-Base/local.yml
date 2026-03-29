@@ -1,0 +1,21 @@
+services:  # Define los contenedores que se van a ejecutar
+
+  postgres16:  # Nombre del servicio (identificador dentro de la red)
+    image: postgres:16  # Imagen base + versión específica
+
+    container_name: postgres16_demo  # Nombre del contenedor
+
+    restart: unless-stopped  # Reinicia automáticamente si falla              
+              #no	No reinicia
+              #always	Siempre reinicia
+              #unless-stopped	Reinicia excepto si lo detienes
+              #on-failure	Solo si falla
+    environment:  # Variables de entorno para configurar el servicio
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin123
+      POSTGRES_DB: demo_db
+
+    ports:  # Mapeo de puertos (host:contenedor)
+      - "5432:5432"
+
+

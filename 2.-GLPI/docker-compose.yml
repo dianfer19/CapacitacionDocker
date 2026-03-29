@@ -1,0 +1,47 @@
+services:
+  db:
+    image: mariadb:12.2.2-ubi10
+    container_name: glpi-db
+    restart: unless-stopped
+    environment:
+      MARIADB_DATABASE: ${DB_NAME}
+      MARIADB_USER: ${DB_USER}
+      MARIADB_PASSWORD: ${DB_PASSWORD}
+      MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+    volumes:
+      - db_data:/var/lib/mysql
+      # (alternativa pro) - db_data:/var/lib/mysql
+    networks: [glpi_net]
+    healthcheck:
+      test: ["CMD-SHELL", "mariadb-admin ping -h 127.0.0.1 -uroot -p$${MARIADB_ROOT_PASSWORD} || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  glpi:
+    image: glpi/glpi:11.0
+    container_name: glpi_cfn
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8080:80"
+    environment:
+      GLPI_DB_HOST: db
+      GLPI_DB_PORT: 3306
+      GLPI_DB_NAME: ${DB_NAME}
+      GLPI_DB_USER: ${DB_USER}
+      GLPI_DB_PASSWORD: ${DB_PASSWORD}
+      GLPI_CRONTAB_ENABLED: 1
+    volumes:
+      - ./data/glpi-var:/var/glpi
+    networks: [glpi_net]
+
+networks:
+  glpi_net:
+    driver: bridge
+
+# (si usas named volume)
+volumes:
+  db_data:

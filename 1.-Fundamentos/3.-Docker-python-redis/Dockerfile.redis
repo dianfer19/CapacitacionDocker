@@ -1,0 +1,2 @@
+FROM docker.io/redis:7-alpine
+RUN echo "hola mundo" 

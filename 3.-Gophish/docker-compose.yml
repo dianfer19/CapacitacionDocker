@@ -1,0 +1,25 @@
+services:
+  gophish:
+    image: gophish/gophish:latest
+    container_name: gophish
+    restart: unless-stopped
+    networks:
+      - gophish_net
+    ports:
+      - "127.0.0.1:3333:3333"  # admin
+      - "127.0.0.1:8080:80"    # phishing
+    volumes:
+      - gophish-data:/opt/gophish
+    security_opt:
+      - no-new-privileges:true
+    tmpfs:
+      - /tmp
+    env_file:
+      - .env
+
+networks:
+  gophish_net:
+    driver: bridge
+
+volumes:
+  gophish-data:

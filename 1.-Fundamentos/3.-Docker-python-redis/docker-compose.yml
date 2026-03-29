@@ -1,0 +1,28 @@
+services:
+  web:
+    build: .
+    container_name: flask_web_demo
+    restart: unless-stopped
+    environment:
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+    ports:
+      - "5000:5000"
+    depends_on:
+      - redis
+
+  #redis:
+   # image: redis:7-alpine
+   # container_name: redis_demo
+   # restart: unless-stopped
+   # ports:
+   #   - "6379:6379"
+  redis:
+    build: 
+      context: .
+      dockerfile: Dockerfile.redis
+    image: redis-custom
+    container_name: redis_demo
+    restart: unless-stopped
+    ports:
+      - "6379:6379"

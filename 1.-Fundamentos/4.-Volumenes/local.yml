@@ -1,0 +1,18 @@
+services:
+  postgres-custom:  
+    build: .
+    image: db-custom:latest  
+    container_name: postgres_custom_demo 
+    restart: unless-stopped  
+    environment:  
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin123
+      POSTGRES_DB: demo_db
+    volumes:  
+      - postgres_data:/var/lib/postgresql/data # Volumen gestionado por docker
+      #- ./data:/var/lib/postgresql/data # Volumen gestionado por el host
+    ports:  
+      - "5432:5432"
+
+volumes:
+  postgres_data: # Volumen gestionado por docker
